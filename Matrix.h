@@ -3,8 +3,8 @@
 #include <initializer_list>
 #include <vector>
 
-const int ROWS = 3;
-const int COLUMNS = 3;
+const int ROWS = 4;
+const int COLUMNS = 4;
 
 class Matrix
 {
@@ -34,5 +34,6 @@ public:
 private:
 	float _matrix[ROWS][COLUMNS];
 	void cpyMatrix(const Matrix &other);
-};
+};
+
 

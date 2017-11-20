@@ -12,7 +12,7 @@ bool Rasteriser::Initialise()
 
 void Rasteriser::Update(Bitmap &bitmap)
 {
-	testMat = Matrix({ (float)cos(10), 0, (float)sin(10), 0, 1, 0, -(float)sin(10), 0, (float)cos(10) });
+	testMat = Matrix({(float)cos(20), -((float)sin(20)), 0, 0, (float)sin(20), (float)cos(20), 0, 0, 0, 0, 0, 1});
 }
 
 void Rasteriser::Render(Bitmap &bitmap)
