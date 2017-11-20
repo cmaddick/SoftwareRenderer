@@ -3,7 +3,7 @@ class Vertex
 {
 public:
 	Vertex();
-	Vertex(float x, float y, float w);
+	Vertex(float x, float y, float z, float w);
 
 	// Copy constructor.  
 	Vertex(const Vertex& v);
@@ -16,6 +16,8 @@ public:
 	void SetX(const float x);
 	float GetY() const;
 	void SetY(const float y);
+	float GetZ() const;
+	void SetZ(const float y);
 	float GetW() const;
 	void SetW(const float w);
 
@@ -29,6 +31,7 @@ public:
 private:
 	float _x;
 	float _y;
+	float _z;
 	float _w;
 };
 

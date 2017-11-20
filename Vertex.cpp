@@ -4,13 +4,15 @@ Vertex::Vertex()
 {
 	_x = 0.0f;
 	_y = 0.0f;
+	_z = 0.0f;
 	_w = 0.0f;
 }
 
-Vertex::Vertex(float x, float y, float w)
+Vertex::Vertex(float x, float y, float z, float w)
 {
 	_x = x;
 	_y = y;
+	_z = z;
 	_w = w;
 }
 
@@ -23,6 +25,7 @@ Vertex::Vertex(const Vertex& v)
 {
 	_x = v.GetX();
 	_y = v.GetY();
+	_z = v.GetZ();
 	_w = v.GetW();
 }
 
@@ -52,6 +55,17 @@ void Vertex::SetY(const float y)
 	_y = y;
 }
 
+float Vertex::GetZ() const
+{
+	return _z;
+}
+
+void Vertex::SetZ(const float z)
+{
+	_z = z;
+}
+
+
 float Vertex::GetW() const
 {
 	return _w;
@@ -70,6 +84,7 @@ Vertex& Vertex::operator=(const Vertex& rhs)
 	{
 		_x = rhs.GetX();
 		_y = rhs.GetY();
+		_z = rhs.GetZ();
 		_w = rhs.GetW();
 	}
 	return *this;
@@ -80,7 +95,7 @@ Vertex& Vertex::operator=(const Vertex& rhs)
 
 bool Vertex::operator==(const Vertex& rhs) const
 {
-	return (_x == rhs.GetX() && _y == rhs.GetY() && _w == rhs.GetW());
+	return (_x == rhs.GetX() && _y == rhs.GetY() && _z == rhs.GetZ() && _w == rhs.GetW());
 }
 
 // You can see three different uses of 'const' here:
@@ -91,5 +106,5 @@ bool Vertex::operator==(const Vertex& rhs) const
 
 const Vertex Vertex::operator+(const Vertex& rhs) const
 {
-	return Vertex(_x + rhs.GetX(), _y + rhs.GetY(), _w + rhs.GetW());
+	return Vertex(_x + rhs.GetX(), _y + rhs.GetY(), _z + rhs.GetZ(), _w + rhs.GetW());
 }
