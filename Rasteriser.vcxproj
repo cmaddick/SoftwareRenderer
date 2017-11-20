@@ -142,6 +142,7 @@
     <ClInclude Include="Bitmap.h" />
     <ClInclude Include="Framework.h" />
     <ClInclude Include="Matrix.h" />
+    <ClInclude Include="Polygon3D.h" />
     <ClInclude Include="Rasteriser.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="targetver.h" />
@@ -151,6 +152,7 @@
     <ClCompile Include="Bitmap.cpp" />
     <ClCompile Include="Framework.cpp" />
     <ClCompile Include="Matrix.cpp" />
+    <ClCompile Include="Polygon3D.cpp" />
     <ClCompile Include="Rasteriser.cpp" />
     <ClCompile Include="Vertex.cpp" />
   </ItemGroup>
