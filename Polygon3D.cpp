@@ -47,4 +47,6 @@ Polygon3D& Polygon3D::operator=(const Polygon3D &rhs)
 	{
 		_indices[i] = rhs.GetIndex(i);
 	}
+
+	return *this;
 }
