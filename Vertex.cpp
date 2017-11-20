@@ -76,6 +76,14 @@ void Vertex::SetW(const float w)
 	_w = w;
 }
 
+void Vertex::DehomogenizeVertex()
+{
+	_x = _x / _w;
+	_y = _y / _w;
+	_z = _z / _w;
+	_w = _w / _w;
+}
+
 Vertex& Vertex::operator=(const Vertex& rhs)
 {
 	// Only do the assignment if we are not assigning

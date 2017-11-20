@@ -8,8 +8,10 @@ public:
 	// Copy constructor.  
 	Vertex(const Vertex& v);
 
-	// Destructer
+	// Destructor
 	~Vertex();
+
+	void DehomogenizeVertex();
 
 	// Accessors
 	float GetX() const;

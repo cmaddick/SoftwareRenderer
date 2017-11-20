@@ -46,3 +46,33 @@ void Model::AddPolygon(int i0, int i1, int i2)
 
 	_polygons.push_back(newPolygon);
 }
+
+void Model::ApplyTransformToOriginalVertices(const Matrix &transform)
+{
+	std::vector<Vertex> newVertices;
+
+	_transformedVertices.clear();
+
+	for (std::vector<Vertex>::iterator it = _vertices.begin(); it != _vertices.end(); it++)
+	{
+		newVertices.push_back(transform * *it);
+	}
+}
+
+void Model::ApplyTransformToTransformedVertices(const Matrix &transform)
+{
+	std::vector<Vertex> newVertices;
+
+	for (std::vector<Vertex>::iterator it = _transformedVertices.begin(); it != _transformedVertices.end(); it++)
+	{
+		*it = transform * *it;
+	}
+}
+
+void Model::DehomogenizeVertices()
+{
+	for (std::vector<Vertex>::iterator it = _transformedVertices.begin(); it != _transformedVertices.end(); it++)
+	{
+		it->DehomogenizeVertex();
+	}
+}
