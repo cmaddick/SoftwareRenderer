@@ -1,0 +1,6 @@
+﻿  Rasteriser.cpp
+c:\users\conne\documents\uni\graphics1\rasteriser\rasteriser.cpp(38): warning C4244: '=': conversion from 'float' to 'LONG', possible loss of data
+c:\users\conne\documents\uni\graphics1\rasteriser\rasteriser.cpp(39): warning C4244: '=': conversion from 'float' to 'LONG', possible loss of data
+c:\users\conne\documents\uni\graphics1\rasteriser\rasteriser.cpp(40): warning C4244: '=': conversion from 'float' to 'LONG', possible loss of data
+c:\users\conne\documents\uni\graphics1\rasteriser\rasteriser.cpp(41): warning C4244: '=': conversion from 'float' to 'LONG', possible loss of data
+  Rasteriser.vcxproj -> C:\Users\Conne\Documents\Uni\Graphics1\x64\Debug\Rasteriser.exe
