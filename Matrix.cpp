@@ -96,3 +96,57 @@ const Vertex Matrix::operator*(const Vertex &other) const
 
 	return result;
 }
+
+Matrix Matrix::TranslationMatrix(float x, float y, float z)
+{
+	Matrix translation;
+
+	translation = Matrix({1, 0, 0, x, 0, 1, 0, y, 0, 0, 1, z, 0, 0, 0, 1});
+
+	return translation;
+}
+
+Matrix Matrix::ScalingMatrix(float x, float y, float z)
+{
+	Matrix scaling;
+
+	scaling = Matrix({ x, 0, 0, 0, 0, y, 0, 0, 0, 0, z, 0, 0, 0, 0, 1 });
+
+	return scaling;
+}
+
+Matrix Matrix::XRotationMatrix(float angle)
+{
+	Matrix rotation;
+
+	rotation = Matrix({ 1, 0, 0, 0, 0, cos(angle), -(sin(angle)), 0, 0, sin(angle), cos(angle), 0, 0, 0, 0, 1 });
+
+	return rotation;
+}
+
+Matrix Matrix::YRotationMatrix(float angle)
+{
+	Matrix rotation;
+
+	rotation = Matrix({ cos(angle), 0, sin(angle), 0, 0, 1, 0, 0, -(sin(angle)), 0, cos(angle), 0, 0, 0, 0, 1 });
+
+	return rotation;
+}
+
+Matrix Matrix::ZRotationMatrix(float angle)
+{
+	Matrix rotation;
+
+	rotation = Matrix({ cos(angle), -(sin(angle)), 0, 0, sin(angle), cos(angle), 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 });
+
+	return rotation;
+}
+
+Matrix Matrix::XYZRotationMatrix(float angleX, float angleY, float angleZ)
+{
+	Matrix rotation;
+
+	rotation = XRotationMatrix(angleX) * YRotationMatrix(angleY) * ZRotationMatrix(angleZ);
+
+	return rotation;
+}

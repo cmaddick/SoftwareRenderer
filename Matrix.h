@@ -31,6 +31,14 @@ public:
 	// Multiply a matrix by a vertex, returning a vertex
 	const Vertex operator*(const Vertex &other) const;
 
+	// Static methods for transformations
+	static Matrix TranslationMatrix(float x, float y, float z);
+	static Matrix ScalingMatrix(float x, float y, float z);
+	static Matrix XRotationMatrix(float angle);
+	static Matrix YRotationMatrix(float angle);
+	static Matrix ZRotationMatrix(float angle);
+	static Matrix XYZRotationMatrix(float angleX, float angleY, float angleZ);
+
 private:
 	float _matrix[ROWS][COLUMNS];
 	void cpyMatrix(const Matrix &other);
