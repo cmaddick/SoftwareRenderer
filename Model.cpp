@@ -18,9 +18,14 @@ std::vector<Polygon3D>& Model::GetPolygons()
 	return _polygons;
 }
 
-std::vector<Vertex>& Model::GetVertices()
+std::vector<Vertex>& Model::GetOriginalVertices()
 {
 	return _vertices;
+}
+
+std::vector<Vertex>& Model::GetTransformedVertices()
+{
+	return _transformedVertices;
 }
 
 size_t Model::GetPolygonCount() const
@@ -57,6 +62,8 @@ void Model::ApplyTransformToOriginalVertices(const Matrix &transform)
 	{
 		newVertices.push_back(transform * *it);
 	}
+
+	_transformedVertices = newVertices;
 }
 
 void Model::ApplyTransformToTransformedVertices(const Matrix &transform)

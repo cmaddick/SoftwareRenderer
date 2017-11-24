@@ -5,7 +5,7 @@
 class Camera
 {
 public:
-	Camera(float xRotation, float yRotation, float zRotation, Vertex& position);
+	Camera(float xRotation, float yRotation, float zRotation, const Vertex& position);
 	~Camera();
 
 	Matrix GetCamMatrix() const;

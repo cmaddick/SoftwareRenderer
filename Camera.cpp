@@ -3,7 +3,7 @@
 
 
 
-Camera::Camera(float xRotation, float yRotation, float zRotation, Vertex& position)
+Camera::Camera(float xRotation, float yRotation, float zRotation, const Vertex& position)
 {
 	Matrix posMatrix = Matrix::TranslationMatrix(-position.GetX(), -position.GetY(), -position.GetZ());
 	_camMatrix = Matrix::XRotationMatrix(xRotation) * Matrix::YRotationMatrix(yRotation) * Matrix::ZRotationMatrix(zRotation) * posMatrix;

@@ -18,7 +18,7 @@ bool Rasteriser::Initialise()
 void Rasteriser::Update(Bitmap &bitmap)
 {
 	_transform = Matrix::YRotationMatrix(1);
-	GeneratePerspectiveMatrix(1, (float)bitmap.GetWidth() / bitmap.GetHeight());
+	GeneratePerspectiveMatrix(1, (float)bitmap.GetWidth() / (float)bitmap.GetHeight());
 	GenerateViewMatrix(1, bitmap.GetHeight(), bitmap.GetWidth());
 }
 
@@ -56,7 +56,7 @@ void Rasteriser::DrawWireFrame(Bitmap &bitmap)
 
 	hDC = bitmap.GetDC();
 	
-	vertices = _model.GetVertices();
+	vertices = _model.GetTransformedVertices();
 
 	SelectObject(hDC, pen);
 

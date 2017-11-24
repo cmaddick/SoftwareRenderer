@@ -11,7 +11,8 @@ public:
 	~Model();
 
 	std::vector<Polygon3D>& GetPolygons();
-	std::vector<Vertex>& GetVertices();
+	std::vector<Vertex>& GetOriginalVertices();
+	std::vector<Vertex>& GetTransformedVertices();
 	size_t GetPolygonCount() const;
 	size_t GetVertexCount() const;
 	void AddVertex(float x, float y, float z);
