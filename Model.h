@@ -10,6 +10,7 @@ public:
 	Model();
 	~Model();
 
+	// Getters/Setters
 	std::vector<Polygon3D>& GetPolygons();
 	std::vector<Vertex>& GetOriginalVertices();
 	std::vector<Vertex>& GetTransformedVertices();
@@ -17,6 +18,8 @@ public:
 	size_t GetVertexCount() const;
 	void AddVertex(float x, float y, float z);
 	void AddPolygon(int i0, int i1, int i2);
+
+	// Transformation application
 	void ApplyTransformToOriginalVertices(const Matrix &transform);
 	void ApplyTransformToTransformedVertices(const Matrix &transform);
 	void DehomogenizeVertices();

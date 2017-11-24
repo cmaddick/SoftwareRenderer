@@ -67,6 +67,7 @@ Matrix& Matrix::operator= (const Matrix &rhs)
 
 const Matrix Matrix::operator*(const Matrix &other) const
 {
+	// Matrix by matrix multiplication
 	Matrix tmpMat;
 
 	for (int i = 0; i < ROWS; i++)
@@ -87,6 +88,7 @@ const Matrix Matrix::operator*(const Matrix &other) const
 
 const Vertex Matrix::operator*(const Vertex &other) const
 {
+	// Matrix by vertex multiplication
 	Vertex result;
 
 	result.SetX(_matrix[0][0] * other.GetX() + _matrix[0][1] * other.GetY() + _matrix[0][2] * other.GetZ() + _matrix[0][3] * other.GetW());

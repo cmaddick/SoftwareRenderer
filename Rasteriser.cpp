@@ -8,6 +8,7 @@ Rasteriser app;
 
 bool Rasteriser::Initialise()
 {
+	// Initalise and load the model into a model instance
 	if (!MD2Loader::LoadModel("cube.md2", _model, &Model::AddPolygon, &Model::AddVertex))
 	{
 		return false;
