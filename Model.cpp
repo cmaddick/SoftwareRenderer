@@ -40,7 +40,7 @@ size_t Model::GetVertexCount() const
 
 void Model::AddVertex(float x, float y, float z)
 {
-	Vertex newVertex = Vertex(x, y, z, 0);
+	Vertex newVertex = Vertex(x, y, z, 1.0);
 
 	_vertices.push_back(newVertex);
 }
@@ -68,18 +68,16 @@ void Model::ApplyTransformToOriginalVertices(const Matrix &transform)
 
 void Model::ApplyTransformToTransformedVertices(const Matrix &transform)
 {
-	std::vector<Vertex> newVertices;
-
-	for (std::vector<Vertex>::iterator it = _transformedVertices.begin(); it != _transformedVertices.end(); it++)
+	for (int i = 0; i < _transformedVertices.size(); i++)
 	{
-		*it = transform * *it;
+		_transformedVertices[i] = transform * _transformedVertices[i];
 	}
 }
 
 void Model::DehomogenizeVertices()
 {
-	for (std::vector<Vertex>::iterator it = _transformedVertices.begin(); it != _transformedVertices.end(); it++)
+	for (int i = 0; i < _transformedVertices.size(); i++)
 	{
-		it->DehomogenizeVertex();
+		_transformedVertices[i].DehomogenizeVertex();
 	}
 }

@@ -19,9 +19,9 @@ bool Rasteriser::Initialise()
 void Rasteriser::Update(Bitmap &bitmap)
 {
 	_transform = Matrix::YRotationMatrix(_delta);
-	GeneratePerspectiveMatrix(0.5, (float)bitmap.GetWidth() / (float)bitmap.GetHeight());
-	GenerateViewMatrix(0.5, bitmap.GetWidth(), bitmap.GetHeight());
-	_delta = _delta + 0.1f;
+	GeneratePerspectiveMatrix(1, (float)bitmap.GetWidth() / (float)bitmap.GetHeight());
+	GenerateViewMatrix(1, bitmap.GetWidth(), bitmap.GetHeight());
+	_delta = _delta + 0.01f;
 }
 
 void Rasteriser::Render(Bitmap &bitmap)
@@ -75,7 +75,7 @@ void Rasteriser::DrawWireFrame(Bitmap &bitmap)
 
 		MoveToEx(hDC, vert0.GetX(), vert0.GetY(), nullptr);
 		LineTo(hDC, vert1.GetX(), vert1.GetY());
-		//LineTo(hDC, vert2.GetX(), vert2.GetY());
-		//LineTo(hDC, vert0.GetX(), vert0.GetY());
+		LineTo(hDC, vert2.GetX(), vert2.GetY());
+		LineTo(hDC, vert0.GetX(), vert0.GetY());
 	}
 }
