@@ -18,9 +18,10 @@ bool Rasteriser::Initialise()
 
 void Rasteriser::Update(Bitmap &bitmap)
 {
-	_transform = Matrix::YRotationMatrix(1);
-	GeneratePerspectiveMatrix(1, (float)bitmap.GetWidth() / (float)bitmap.GetHeight());
-	GenerateViewMatrix(1, bitmap.GetHeight(), bitmap.GetWidth());
+	_transform = Matrix::YRotationMatrix(_delta);
+	GeneratePerspectiveMatrix(0.5, (float)bitmap.GetWidth() / (float)bitmap.GetHeight());
+	GenerateViewMatrix(0.5, bitmap.GetWidth(), bitmap.GetHeight());
+	_delta = _delta + 0.1f;
 }
 
 void Rasteriser::Render(Bitmap &bitmap)
@@ -30,10 +31,11 @@ void Rasteriser::Render(Bitmap &bitmap)
 	_model.ApplyTransformToTransformedVertices(_perspectiveMatrix);
 	_model.DehomogenizeVertices();
 	_model.ApplyTransformToTransformedVertices(_viewMatrix);
-	DrawWireFrame(bitmap);
 
 	// Clear the window to black
 	bitmap.Clear(RGB(0, 0, 0));
+
+	DrawWireFrame(bitmap);
 }
 
 void Rasteriser::GeneratePerspectiveMatrix(float d, float aspectRatio)
@@ -49,7 +51,7 @@ void Rasteriser::GenerateViewMatrix(float d, int width, int height)
 void Rasteriser::DrawWireFrame(Bitmap &bitmap)
 {
 	std::vector<Polygon3D> polygons = _model.GetPolygons();
-	HPEN pen = CreatePen(PS_SOLID, 2, RGB(255, 0, 0));
+	HPEN pen = CreatePen(PS_SOLID, 1, RGB(0, 0, 255));
 	int ind0, ind1, ind2;
 	Vertex vert0, vert1, vert2;
 	std::vector<Vertex> vertices;
@@ -73,7 +75,7 @@ void Rasteriser::DrawWireFrame(Bitmap &bitmap)
 
 		MoveToEx(hDC, vert0.GetX(), vert0.GetY(), nullptr);
 		LineTo(hDC, vert1.GetX(), vert1.GetY());
-		LineTo(hDC, vert2.GetX(), vert2.GetY());
-		LineTo(hDC, vert0.GetX(), vert0.GetY());
+		//LineTo(hDC, vert2.GetX(), vert2.GetY());
+		//LineTo(hDC, vert0.GetX(), vert0.GetY());
 	}
 }
