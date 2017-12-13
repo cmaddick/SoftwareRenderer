@@ -1,4 +1,5 @@
 #pragma once
+#include "Vector3D.h"
 class Vertex
 {
 public:
@@ -19,7 +20,7 @@ public:
 	float GetY() const;
 	void SetY(const float y);
 	float GetZ() const;
-	void SetZ(const float y);
+	void SetZ(const float z);
 	float GetW() const;
 	void SetW(const float w);
 
@@ -29,6 +30,7 @@ public:
 	bool operator== (const Vertex& rhs) const;
 
 	const Vertex operator+ (const Vertex& rhs) const;
+	const Vector3D operator- (const Vertex& rhs) const;
 
 private:
 	float _x;

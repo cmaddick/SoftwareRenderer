@@ -36,6 +36,31 @@ int Polygon3D::GetIndex(int i) const
 	return _indices[i];
 }
 
+bool Polygon3D::IsMarkedForCulling() const
+{
+	return _markedForCulling;
+}
+
+void Polygon3D::MarkForCulling()
+{
+	_markedForCulling = true;
+}
+
+void Polygon3D::UnMarkForCulling()
+{
+	_markedForCulling = false;
+}
+
+Vector3D Polygon3D::GetNormal() const
+{
+	return _normal;
+}
+
+void Polygon3D::SetNormal(const Vector3D normal)
+{
+	_normal = normal;
+}
+
 void Polygon3D::SetIndex(int index, const int value)
 {
 	_indices[index] = value;

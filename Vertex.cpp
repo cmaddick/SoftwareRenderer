@@ -116,3 +116,14 @@ const Vertex Vertex::operator+(const Vertex& rhs) const
 {
 	return Vertex(_x + rhs.GetX(), _y + rhs.GetY(), _z + rhs.GetZ(), _w + rhs.GetW());
 }
+
+const Vector3D Vertex::operator- (const Vertex& rhs) const
+{
+	Vector3D result;
+
+	result.SetX(_x - rhs.GetX());
+	result.SetY(_y - rhs.GetY());
+	result.SetZ(_z - rhs.GetZ());
+
+	return result;
+}

@@ -149,6 +149,7 @@
     <ClInclude Include="Rasteriser.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="targetver.h" />
+    <ClInclude Include="Vector3D.h" />
     <ClInclude Include="Vertex.h" />
   </ItemGroup>
   <ItemGroup>
@@ -160,6 +161,7 @@
     <ClCompile Include="Model.cpp" />
     <ClCompile Include="Polygon3D.cpp" />
     <ClCompile Include="Rasteriser.cpp" />
+    <ClCompile Include="Vector3D.cpp" />
     <ClCompile Include="Vertex.cpp" />
   </ItemGroup>
   <ItemGroup>

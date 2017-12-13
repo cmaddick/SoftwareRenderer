@@ -9,8 +9,10 @@ public:
 	~Camera();
 
 	Matrix GetCamMatrix() const;
+	Vertex GetPosition() const;
 
 private:
 	Matrix _camMatrix;
+	Vertex _position;
 };
 

@@ -1,7 +1,7 @@
 ﻿  Rasteriser.cpp
-u:\year 2\graphics\project\rasteriser.cpp(76): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-u:\year 2\graphics\project\rasteriser.cpp(77): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-u:\year 2\graphics\project\rasteriser.cpp(78): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
 u:\year 2\graphics\project\rasteriser.cpp(79): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+u:\year 2\graphics\project\rasteriser.cpp(80): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+u:\year 2\graphics\project\rasteriser.cpp(81): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+u:\year 2\graphics\project\rasteriser.cpp(82): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
   Rasteriser.vcxproj -> U:\Year 2\Graphics\Project\x64\Debug\Rasteriser.exe
   Rasteriser.vcxproj -> U:\Year 2\Graphics\Project\x64\Debug\Rasteriser.pdb (Partial PDB)

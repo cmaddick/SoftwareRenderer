@@ -4,6 +4,7 @@
 #include "Polygon3D.h"
 #include "Vertex.h"
 #include "Matrix.h"
+
 class Model
 {
 public:
@@ -23,6 +24,8 @@ public:
 	void ApplyTransformToOriginalVertices(const Matrix &transform);
 	void ApplyTransformToTransformedVertices(const Matrix &transform);
 	void DehomogenizeVertices();
+
+	void CalculateBackfaces(Vertex cameraPos);
 
 private:
 	std::vector<Polygon3D> _polygons;

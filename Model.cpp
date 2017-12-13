@@ -81,3 +81,41 @@ void Model::DehomogenizeVertices()
 		_transformedVertices[i].DehomogenizeVertex();
 	}
 }
+
+void Model::CalculateBackfaces(Vertex cameraPos)
+{
+	Vertex v0, v1, v2;
+	int i0, i1, i2;
+	Vector3D a, b, normal, eyeVector;
+	float tmp;
+
+	for (int i = 0; i < _polygons.size(); i++)
+	{
+		i0 = _polygons[i].GetIndex(0);
+		i1 = _polygons[i].GetIndex(1);
+		i2 = _polygons[i].GetIndex(2);
+
+		v0 = _transformedVertices[i0];
+		v1 = _transformedVertices[i1];
+		v2 = _transformedVertices[i2];
+
+		a = v0 - v1;
+		b = v0 - v2;
+
+		normal = Vector3D::CrossProduct(b, a);
+		_polygons[i].SetNormal(normal);
+
+		eyeVector = v0 - cameraPos;
+
+		tmp = Vector3D::DotProduct(normal, eyeVector);
+
+		if (tmp < 0)
+		{
+			_polygons[i].MarkForCulling();
+		}
+		else
+		{
+			_polygons[i].UnMarkForCulling();
+		}
+	}
+}

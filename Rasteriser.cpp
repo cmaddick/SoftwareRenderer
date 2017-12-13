@@ -27,6 +27,7 @@ void Rasteriser::Update(Bitmap &bitmap)
 void Rasteriser::Render(Bitmap &bitmap)
 {	
 	_model.ApplyTransformToOriginalVertices(_transform);
+	_model.CalculateBackfaces(_camera.GetPosition());
 	_model.ApplyTransformToTransformedVertices(_camera.GetCamMatrix());
 	_model.ApplyTransformToTransformedVertices(_perspectiveMatrix);
 	_model.DehomogenizeVertices();
@@ -73,9 +74,12 @@ void Rasteriser::DrawWireFrame(Bitmap &bitmap)
 		vert1 = vertices[ind1];
 		vert2 = vertices[ind2];
 
-		MoveToEx(hDC, vert0.GetX(), vert0.GetY(), nullptr);
-		LineTo(hDC, vert1.GetX(), vert1.GetY());
-		LineTo(hDC, vert2.GetX(), vert2.GetY());
-		LineTo(hDC, vert0.GetX(), vert0.GetY());
+		if (!it->IsMarkedForCulling())
+		{
+			MoveToEx(hDC, vert0.GetX(), vert0.GetY(), nullptr);
+			LineTo(hDC, vert1.GetX(), vert1.GetY());
+			LineTo(hDC, vert2.GetX(), vert2.GetY());
+			LineTo(hDC, vert0.GetX(), vert0.GetY());
+		}
 	}
 }
