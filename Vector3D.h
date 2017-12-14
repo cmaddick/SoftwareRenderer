@@ -20,6 +20,8 @@ public:
 	static float DotProduct(const Vector3D& v1, const Vector3D& v2);
 	static Vector3D CrossProduct(const Vector3D& v1, const Vector3D& v2);
 
+	Vector3D GetNormalisedVector();
+
 private:
 	float _x;
 	float _y;

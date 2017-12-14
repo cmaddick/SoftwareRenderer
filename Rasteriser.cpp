@@ -9,16 +9,19 @@ Rasteriser app;
 bool Rasteriser::Initialise()
 {
 	// Initalise and load the model into a model instance
-	if (!MD2Loader::LoadModel("cartman.md2", _model, &Model::AddPolygon, &Model::AddVertex))
+	if (!MD2Loader::LoadModel("car.md2", _model, &Model::AddPolygon, &Model::AddVertex))
 	{
 		return false;
 	}
+
+	_dLights.push_back(DirectionalLight(255, 0, 0));
+
 	return true;
 }
 
 void Rasteriser::Update(Bitmap &bitmap)
 {
-	_transform = Matrix::YRotationMatrix(_delta);
+	_transform = Matrix::XYZRotationMatrix(_delta, _delta, _delta);
 	GeneratePerspectiveMatrix(1, (float)bitmap.GetWidth() / (float)bitmap.GetHeight());
 	GenerateViewMatrix(1, bitmap.GetWidth(), bitmap.GetHeight());
 	_delta = _delta + 0.01f;
@@ -28,6 +31,7 @@ void Rasteriser::Render(Bitmap &bitmap)
 {	
 	_model.ApplyTransformToOriginalVertices(_transform);
 	_model.CalculateBackfaces(_camera.GetPosition());
+	_model.CalculateLightingDirectional(_dLights);
 	_model.ApplyTransformToTransformedVertices(_camera.GetCamMatrix());
 	_model.Sort();
 	_model.ApplyTransformToTransformedVertices(_perspectiveMatrix);
@@ -90,7 +94,7 @@ void Rasteriser::DrawSolidFlat(Bitmap &bitmap)
 {
 	std::vector<Polygon3D> polygons = _model.GetPolygons();
 	HPEN pen = CreatePen(PS_SOLID, 1, RGB(0, 0, 255));
-	HBRUSH brush = CreateSolidBrush(RGB(0, 0, 255));
+	HBRUSH brush = CreateSolidBrush(RGB(0, 0, 0));
 	int ind0, ind1, ind2;
 	Vertex vert0, vert1, vert2;
 	std::vector<Vertex> vertices;
@@ -100,11 +104,16 @@ void Rasteriser::DrawSolidFlat(Bitmap &bitmap)
 
 	vertices = _model.GetTransformedVertices();
 
-	SelectObject(hDC, pen);
-	SelectObject(hDC, brush);
+	
 
 	for (std::vector<Polygon3D>::iterator it = polygons.begin(); it != polygons.end(); it++)
 	{
+		HPEN pen = CreatePen(PS_SOLID, 1, it->GetColour());
+		HBRUSH brush = CreateSolidBrush(it->GetColour());
+
+		SelectObject(hDC, pen);
+		SelectObject(hDC, brush);
+
 		ind0 = it->GetIndex(0);
 		ind1 = it->GetIndex(1);
 		ind2 = it->GetIndex(2);
@@ -123,6 +132,12 @@ void Rasteriser::DrawSolidFlat(Bitmap &bitmap)
 		points[1].y = vert1.GetY();
 		points[2].y = vert2.GetY();
 
-		Polygon(hDC, points, 3);
+		if (!it->IsMarkedForCulling())
+		{
+			Polygon(hDC, points, 3);
+		}
+
+		DeleteObject(pen);
+		DeleteObject(brush);
 	}
 }

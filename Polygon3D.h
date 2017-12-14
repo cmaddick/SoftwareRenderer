@@ -1,5 +1,7 @@
 #pragma once
 #include "Vector3D.h"
+#include "Framework.h"
+
 class Polygon3D
 {
 public:
@@ -21,6 +23,8 @@ public:
 	void SetNormal(const Vector3D normal);
 	float GetAvgZDepth() const;
 	void SetAvgZDepth(const float zDepth);
+	COLORREF GetColour() const;
+	void SetColour(const int r, const int g, const int b);
 
 	// Operators
 	Polygon3D& operator= (const Polygon3D &rhs);
@@ -30,5 +34,8 @@ private:
 	bool _markedForCulling;
 	Vector3D _normal;
 	float _avgZDepth;
+
+	// Colour
+	COLORREF _colour = RGB(255, 255, 255);
 };
 

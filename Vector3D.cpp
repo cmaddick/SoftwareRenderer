@@ -80,3 +80,13 @@ Vector3D Vector3D::CrossProduct(const Vector3D& v1, const Vector3D& v2)
 
 	return result;
 }
+
+Vector3D Vector3D::GetNormalisedVector()
+{
+	Vector3D result;
+	float mag = GetMagnitude();
+	
+	result = Vector3D(_x / mag, _y / mag, _z / mag);
+
+	return result;
+}

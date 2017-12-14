@@ -29,6 +29,7 @@ Polygon3D::Polygon3D(const Polygon3D &p)
 	_markedForCulling = p.IsMarkedForCulling();
 	_normal = p.GetNormal();
 	_avgZDepth = p.GetAvgZDepth();
+	_colour = p.GetColour();
 }
 
 Polygon3D::~Polygon3D()
@@ -80,6 +81,16 @@ void Polygon3D::SetAvgZDepth(const float zDepth)
 	_avgZDepth = zDepth;
 }
 
+COLORREF Polygon3D::GetColour() const
+{
+	return _colour;
+}
+
+void Polygon3D::SetColour(const int r, const int g, const int b)
+{
+	_colour = RGB(r, g, b);
+}
+
 Polygon3D& Polygon3D::operator=(const Polygon3D &rhs)
 {
 	for (int i = 0; i < 3; i++)
@@ -90,6 +101,7 @@ Polygon3D& Polygon3D::operator=(const Polygon3D &rhs)
 	_markedForCulling = rhs.IsMarkedForCulling();
 	_normal = rhs.GetNormal();
 	_avgZDepth = rhs.GetAvgZDepth();
+	_colour = rhs.GetColour();
 
 	return *this;
 }

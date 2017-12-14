@@ -4,6 +4,7 @@
 #include "Polygon3D.h"
 #include "Vertex.h"
 #include "Matrix.h"
+#include "DirectionalLight.h"
 
 class Model
 {
@@ -29,8 +30,23 @@ public:
 
 	void Sort(void);
 
+	void CalculateLightingDirectional(std::vector<DirectionalLight> dLights);
+
 private:
 	std::vector<Polygon3D> _polygons;
 	std::vector<Vertex> _vertices;
 	std::vector<Vertex> _transformedVertices;
+
+	// Reflection coeff
+	float _ka_r = 0.8f;
+	float _ka_g = 0.8f;
+	float _ka_b = 0.8f;
+
+	float _kd_r = 0.8f;
+	float _kd_g = 0.8f;
+	float _kd_b = 0.8f;
+
+	float _ks_r = 0.8f;
+	float _ks_g = 0.8f;
+	float _ks_b = 0.8f;
 };

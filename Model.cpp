@@ -144,4 +144,68 @@ void Model::Sort(void)
 	std::sort(_polygons.begin(), _polygons.end(), [](const Polygon3D& lhs, const Polygon3D& rhs) {return lhs.GetAvgZDepth() > rhs.GetAvgZDepth();});
 }
 
+void Model::CalculateLightingDirectional(std::vector<DirectionalLight> dLights)
+{
+	int totR, totG, totB;
+	int tmpR, tmpG, tmpB;
 
+	for (int i = 0; i < _polygons.size(); i++)
+	{
+		totR = 0;
+		totG = 0;
+		totB = 0;
+
+		for (int j = 0; j < dLights.size(); j++)
+		{
+			tmpR = dLights[j].GetR();
+			tmpG = dLights[j].GetG();
+			tmpB = dLights[j].GetB();
+
+			tmpR = tmpR * _kd_r;
+			tmpG = tmpG * _kd_g;
+			tmpB = tmpB * _kd_b;
+
+			Vector3D lightNormal = dLights[j].GetDirection().GetNormalisedVector();
+			Vector3D polyNormal =  _polygons[i].GetNormal().GetNormalisedVector();
+
+			float dotProd = Vector3D::DotProduct(lightNormal, polyNormal);
+
+			tmpR = tmpR * dotProd;
+			tmpG = tmpG * dotProd;
+			tmpB = tmpB * dotProd;
+
+			totR = totR + tmpR;
+			totG = totG + tmpG;
+			totB = totB + tmpB;
+		}
+
+		if (totR > 255)
+		{
+			totR = 255;
+		}
+		else if (totR < 0)
+		{
+			totR = 0;
+		}
+
+		if (totG > 255)
+		{
+			totG = 255;
+		}
+		else if (totG < 0)
+		{
+			totG = 0;
+		}
+
+		if (totB > 255)
+		{
+			totB = 255;
+		}
+		else if (totB < 0)
+		{
+			totB = 0;
+		}
+
+		_polygons[i].SetColour(totR, totG, totB);
+	}
+}
