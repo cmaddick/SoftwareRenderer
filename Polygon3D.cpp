@@ -28,6 +28,7 @@ Polygon3D::Polygon3D(const Polygon3D &p)
 
 	_markedForCulling = p.IsMarkedForCulling();
 	_normal = p.GetNormal();
+	_avgZDepth = p.GetAvgZDepth();
 }
 
 Polygon3D::~Polygon3D()
@@ -69,12 +70,26 @@ void Polygon3D::SetIndex(int index, const int value)
 	_indices[index] = value;
 }
 
+float Polygon3D::GetAvgZDepth() const
+{
+	return _avgZDepth;
+}
+
+void Polygon3D::SetAvgZDepth(const float zDepth)
+{
+	_avgZDepth = zDepth;
+}
+
 Polygon3D& Polygon3D::operator=(const Polygon3D &rhs)
 {
-	for (int i = 0; i < 2; i++)
+	for (int i = 0; i < 3; i++)
 	{
 		_indices[i] = rhs.GetIndex(i);
 	}
+
+	_markedForCulling = rhs.IsMarkedForCulling();
+	_normal = rhs.GetNormal();
+	_avgZDepth = rhs.GetAvgZDepth();
 
 	return *this;
 }

@@ -19,6 +19,8 @@ public:
 	void UnMarkForCulling();
 	Vector3D GetNormal() const;
 	void SetNormal(const Vector3D normal);
+	float GetAvgZDepth() const;
+	void SetAvgZDepth(const float zDepth);
 
 	// Operators
 	Polygon3D& operator= (const Polygon3D &rhs);
@@ -27,5 +29,6 @@ private:
 	int _indices[3];
 	bool _markedForCulling;
 	Vector3D _normal;
+	float _avgZDepth;
 };
 

@@ -27,9 +27,10 @@ public:
 
 	void CalculateBackfaces(Vertex cameraPos);
 
+	void Sort(void);
+
 private:
 	std::vector<Polygon3D> _polygons;
 	std::vector<Vertex> _vertices;
 	std::vector<Vertex> _transformedVertices;
 };
-

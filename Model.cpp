@@ -2,7 +2,7 @@
 #include <vector>
 #include "Polygon3D.h"
 #include "Vertex.h"
-
+#include <algorithm>
 
 Model::Model()
 {
@@ -119,3 +119,29 @@ void Model::CalculateBackfaces(Vertex cameraPos)
 		}
 	}
 }
+
+void Model::Sort(void)
+{
+	Vertex v0, v1, v2;
+	int i0, i1, i2;
+	float avgZ = 0.0f;
+
+	for (int i = 0; i < _polygons.size(); i++)
+	{
+		i0 = _polygons[i].GetIndex(0);
+		i1 = _polygons[i].GetIndex(1);
+		i2 = _polygons[i].GetIndex(2);
+
+		v0 = _transformedVertices[i0];
+		v1 = _transformedVertices[i1];
+		v2 = _transformedVertices[i2];
+
+		avgZ = (v0.GetZ() + v1.GetZ() + v2.GetZ()) / 3;
+
+		_polygons[i].SetAvgZDepth(avgZ);
+	}
+
+	std::sort(_polygons.begin(), _polygons.end(), [](const Polygon3D& lhs, const Polygon3D& rhs) {return lhs.GetAvgZDepth() > rhs.GetAvgZDepth();});
+}
+
+

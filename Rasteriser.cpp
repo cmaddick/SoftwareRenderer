@@ -9,7 +9,7 @@ Rasteriser app;
 bool Rasteriser::Initialise()
 {
 	// Initalise and load the model into a model instance
-	if (!MD2Loader::LoadModel("car.md2", _model, &Model::AddPolygon, &Model::AddVertex))
+	if (!MD2Loader::LoadModel("cartman.md2", _model, &Model::AddPolygon, &Model::AddVertex))
 	{
 		return false;
 	}
@@ -18,7 +18,7 @@ bool Rasteriser::Initialise()
 
 void Rasteriser::Update(Bitmap &bitmap)
 {
-	_transform = Matrix::XYZRotationMatrix(_delta, _delta, _delta);
+	_transform = Matrix::YRotationMatrix(_delta);
 	GeneratePerspectiveMatrix(1, (float)bitmap.GetWidth() / (float)bitmap.GetHeight());
 	GenerateViewMatrix(1, bitmap.GetWidth(), bitmap.GetHeight());
 	_delta = _delta + 0.01f;
@@ -29,6 +29,7 @@ void Rasteriser::Render(Bitmap &bitmap)
 	_model.ApplyTransformToOriginalVertices(_transform);
 	_model.CalculateBackfaces(_camera.GetPosition());
 	_model.ApplyTransformToTransformedVertices(_camera.GetCamMatrix());
+	_model.Sort();
 	_model.ApplyTransformToTransformedVertices(_perspectiveMatrix);
 	_model.DehomogenizeVertices();
 	_model.ApplyTransformToTransformedVertices(_viewMatrix);
