@@ -7,7 +7,7 @@ public:
 
 	~Vector3D();
 
-	// Accessors
+	// Getters/Setters
 	float GetX() const;
 	void SetX(const float x);
 	float GetY() const;
@@ -15,8 +15,10 @@ public:
 	float GetZ() const;
 	void SetZ(const float z);
 
+	// Vector magnitude
 	float GetMagnitude();
 
+	// Vector multiplication statics
 	static float DotProduct(const Vector3D& v1, const Vector3D& v2);
 	static Vector3D CrossProduct(const Vector3D& v1, const Vector3D& v2);
 

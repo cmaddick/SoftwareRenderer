@@ -16,6 +16,8 @@ Matrix::Matrix()
 
 Matrix::Matrix(const Matrix &other)
 {
+	// Copy constructor
+
 	cpyMatrix(other);
 }
 

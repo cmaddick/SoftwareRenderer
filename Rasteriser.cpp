@@ -14,6 +14,7 @@ bool Rasteriser::Initialise()
 		return false;
 	}
 
+	// Set up directional and point lights
 	_dLights.push_back(DirectionalLight(200, 0, 0));
 	_pLights.push_back(PointLight(0, 200, 250, Vertex(20, 50, -50, 0.0f)));
 
@@ -60,6 +61,8 @@ void Rasteriser::GenerateViewMatrix(float d, int width, int height)
 
 void Rasteriser::DrawWireFrame(Bitmap &bitmap)
 {
+	// Draws wire frame of all polygons in the model /w backface culling
+
 	std::vector<Polygon3D> polygons = _model.GetPolygons();
 	HPEN pen = CreatePen(PS_SOLID, 1, RGB(0, 0, 255));
 	int ind0, ind1, ind2;
@@ -95,6 +98,8 @@ void Rasteriser::DrawWireFrame(Bitmap &bitmap)
 
 void Rasteriser::DrawSolidFlat(Bitmap &bitmap)
 {
+	// Draws and fills polygons with the appropriate colour that make up the model
+
 	std::vector<Polygon3D> polygons = _model.GetPolygons();
 	HPEN pen = CreatePen(PS_SOLID, 1, RGB(0, 0, 255));
 	HBRUSH brush = CreateSolidBrush(RGB(0, 0, 0));
@@ -106,8 +111,6 @@ void Rasteriser::DrawSolidFlat(Bitmap &bitmap)
 	hDC = bitmap.GetDC();
 
 	vertices = _model.GetTransformedVertices();
-
-	
 
 	for (std::vector<Polygon3D>::iterator it = polygons.begin(); it != polygons.end(); it++)
 	{
@@ -140,6 +143,7 @@ void Rasteriser::DrawSolidFlat(Bitmap &bitmap)
 			Polygon(hDC, points, 3);
 		}
 
+		// Delete pen and brush because of resource issues
 		DeleteObject(pen);
 		DeleteObject(brush);
 	}

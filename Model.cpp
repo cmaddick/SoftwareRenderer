@@ -84,6 +84,8 @@ void Model::DehomogenizeVertices()
 
 void Model::CalculateBackfaces(Vertex cameraPos)
 {
+	// Flags polygons for backface culling
+
 	Vertex v0, v1, v2;
 	int i0, i1, i2;
 	Vector3D a, b, normal, eyeVector;
@@ -99,6 +101,7 @@ void Model::CalculateBackfaces(Vertex cameraPos)
 		v1 = _transformedVertices[i1];
 		v2 = _transformedVertices[i2];
 
+		// Construct vectors a, b that can give the normal vector
 		a = v0 - v1;
 		b = v0 - v2;
 
@@ -122,6 +125,8 @@ void Model::CalculateBackfaces(Vertex cameraPos)
 
 void Model::Sort(void)
 {
+	// Sort polygons by Z depth
+
 	Vertex v0, v1, v2;
 	int i0, i1, i2;
 	float avgZ = 0.0f;
@@ -151,6 +156,7 @@ void Model::CalculateLightingDirectional(std::vector<DirectionalLight> dLights)
 
 	for (int i = 0; i < _polygons.size(); i++)
 	{
+		// Get already set RGB values from other lighting methods
 		totR = GetRValue(_polygons[i].GetColour());
 		totG = GetGValue(_polygons[i].GetColour());
 		totB = GetBValue(_polygons[i].GetColour());
@@ -161,10 +167,12 @@ void Model::CalculateLightingDirectional(std::vector<DirectionalLight> dLights)
 			tmpG = dLights[j].GetG();
 			tmpB = dLights[j].GetB();
 
+			// Apply reflection coefficients
 			tmpR = tmpR * _kd_r;
 			tmpG = tmpG * _kd_g;
 			tmpB = tmpB * _kd_b;
 
+			// Normalise vectors
 			Vector3D lightNormal = dLights[j].GetDirection().GetNormalisedVector();
 			Vector3D polyNormal =  _polygons[i].GetNormal().GetNormalisedVector();
 
@@ -179,6 +187,7 @@ void Model::CalculateLightingDirectional(std::vector<DirectionalLight> dLights)
 			totB = totB + tmpB;
 		}
 
+		// Cap values between 0 and 255
 		if (totR > 255)
 		{
 			totR = 255;
@@ -240,6 +249,7 @@ void Model::CalculateLightingPoint(std::vector<PointLight> pLights)
 
 	for (int i = 0; i < _polygons.size(); i++)
 	{
+		// Get already set RGB values from other lighting methods
 		totR = GetRValue(_polygons[i].GetColour());
 		totG = GetGValue(_polygons[i].GetColour());
 		totB = GetBValue(_polygons[i].GetColour());
@@ -250,16 +260,19 @@ void Model::CalculateLightingPoint(std::vector<PointLight> pLights)
 			tmpG = pLights[j].GetG();
 			tmpB = pLights[j].GetB();
 
+			// Apply reflection coefficients
 			tmpR = tmpR * _kd_r;
 			tmpG = tmpG * _kd_g;
 			tmpB = tmpB * _kd_b;
 
+			// Calculate vector TO the light source position
 			Vector3D toLight = Vector3D(_transformedVertices[_polygons[i].GetIndex(0)].GetX() - pLights[j].GetPosition().GetX(),
 										_transformedVertices[_polygons[i].GetIndex(0)].GetY() - pLights[j].GetPosition().GetY(),
 										_transformedVertices[_polygons[i].GetIndex(0)].GetZ() - pLights[j].GetPosition().GetZ());
 
 			float attenuation = 1 / toLight.GetMagnitude() * pow(toLight.GetMagnitude(), 2);
 
+			// Normalise vectors
 			Vector3D polyNormal = _polygons[i].GetNormal().GetNormalisedVector();
 			Vector3D toLightNormal = toLight.GetNormalisedVector();
 
@@ -274,6 +287,7 @@ void Model::CalculateLightingPoint(std::vector<PointLight> pLights)
 			totB = totB + tmpB;
 		}
 
+		// Cap values between 0 and 255
 		if (totR > 255)
 		{
 			totR = 255;

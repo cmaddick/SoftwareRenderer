@@ -7,6 +7,7 @@ public:
 	DirectionalLight(int r, int g, int b);
 	~DirectionalLight();
 
+	// Setters/Getters
 	int GetR() const;
 	void SetR(const int r);
 	int GetG() const;

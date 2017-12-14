@@ -5,6 +5,7 @@ public:
 	AmbientLight(int r, int g, int b);
 	~AmbientLight();
 
+	// Setters/Getters
 	int GetR() const;
 	void SetR(const int r);
 	int GetG() const;

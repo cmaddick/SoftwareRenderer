@@ -21,15 +21,7 @@ Polygon3D::Polygon3D(int index0, int index1, int index2)
 Polygon3D::Polygon3D(const Polygon3D &p)
 {
 	// Copy constructor
-	for (int i = 0; i < 3; i++)
-	{
-		_indices[i] = p.GetIndex(i);
-	}
-
-	_markedForCulling = p.IsMarkedForCulling();
-	_normal = p.GetNormal();
-	_avgZDepth = p.GetAvgZDepth();
-	_colour = p.GetColour();
+	*this = p;
 }
 
 Polygon3D::~Polygon3D()

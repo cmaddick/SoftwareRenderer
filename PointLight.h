@@ -6,6 +6,7 @@ public:
 	PointLight(int r, int g, int b, Vertex& pos);
 	~PointLight();
 
+	// Getters/Setters
 	int GetR() const;
 	void SetR(const int r);
 	int GetG() const;

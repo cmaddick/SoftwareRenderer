@@ -23,11 +23,16 @@ public:
 
 private:
 	Model _model;
+	
+	// Matrices
 	Camera _camera = Camera(0.0f, 0.0f, 0.0f, Vertex(0.0f, 0.0f, 50.0f, 1.0f));
 	Matrix _viewMatrix;
 	Matrix _perspectiveMatrix;
 	Matrix _transform;
+
 	float _delta = 0.0f;
+
+	// Lights
 	std::vector<DirectionalLight> _dLights;
 	std::vector<PointLight> _pLights;
 };

@@ -28,10 +28,13 @@ public:
 	void ApplyTransformToTransformedVertices(const Matrix &transform);
 	void DehomogenizeVertices();
 
+	// Backface culling
 	void CalculateBackfaces(Vertex cameraPos);
 
+	// Z depth sorting
 	void Sort(void);
 
+	// Light methods
 	void CalculateLightingDirectional(std::vector<DirectionalLight> dLights);
 	void CalculateLightingAmbient(AmbientLight aLight);
 	void CalculateLightingPoint(std::vector<PointLight> pLights);
@@ -41,15 +44,18 @@ private:
 	std::vector<Vertex> _vertices;
 	std::vector<Vertex> _transformedVertices;
 
-	// Reflection coeff
+	// --- Reflection coeff ---
+	// Ambient
 	float _ka_r = 0.2f;
 	float _ka_g = 0.2f;
 	float _ka_b = 0.2f;
 
+	// Diffuse
 	float _kd_r = 0.5f;
 	float _kd_g = 0.5f;
 	float _kd_b = 0.5f;
 
+	// Specular
 	float _ks_r = 0.8f;
 	float _ks_g = 0.8f;
 	float _ks_b = 0.8f;

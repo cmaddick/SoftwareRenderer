@@ -23,10 +23,7 @@ Vertex::Vertex(float x, float y, float z, float w)
 
 Vertex::Vertex(const Vertex& v)
 {
-	_x = v.GetX();
-	_y = v.GetY();
-	_z = v.GetZ();
-	_w = v.GetW();
+	*this = v;
 }
 
 // Destructor does not need to do anything

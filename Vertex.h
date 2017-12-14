@@ -14,7 +14,7 @@ public:
 
 	void DehomogenizeVertex();
 
-	// Accessors
+	// Getters/Setters
 	float GetX() const;
 	void SetX(const float x);
 	float GetY() const;
@@ -27,8 +27,10 @@ public:
 	// Assignment operator
 	Vertex& operator= (const Vertex& rhs);
 
+	// Equality operator
 	bool operator== (const Vertex& rhs) const;
 
+	// Addition/Subtraction operators
 	const Vertex operator+ (const Vertex& rhs) const;
 	const Vector3D operator- (const Vertex& rhs) const;
 
