@@ -6,6 +6,7 @@
 #include "Model.h"
 #include "Camera.h"
 #include "DirectionalLight.h"
+#include "PointLight.h"
 
 class Rasteriser : public Framework
 {
@@ -28,5 +29,6 @@ private:
 	Matrix _transform;
 	float _delta = 0.0f;
 	std::vector<DirectionalLight> _dLights;
+	std::vector<PointLight> _pLights;
 };
 

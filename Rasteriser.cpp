@@ -14,7 +14,8 @@ bool Rasteriser::Initialise()
 		return false;
 	}
 
-	_dLights.push_back(DirectionalLight(255, 0, 0));
+	_dLights.push_back(DirectionalLight(200, 0, 0));
+	_pLights.push_back(PointLight(0, 200, 250, Vertex(20, 50, -50, 0.0f)));
 
 	return true;
 }
@@ -32,7 +33,8 @@ void Rasteriser::Render(Bitmap &bitmap)
 	_model.ApplyTransformToOriginalVertices(_transform);
 	_model.CalculateBackfaces(_camera.GetPosition());
 	_model.CalculateLightingAmbient(AmbientLight(100, 100, 100));
-	_model.CalculateLightingDirectional(_dLights);
+	//_model.CalculateLightingDirectional(_dLights);
+	//_model.CalculateLightingPoint(_pLights);
 	_model.ApplyTransformToTransformedVertices(_camera.GetCamMatrix());
 	_model.Sort();
 	_model.ApplyTransformToTransformedVertices(_perspectiveMatrix);

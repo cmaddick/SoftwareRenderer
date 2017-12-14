@@ -232,3 +232,75 @@ void Model::CalculateLightingAmbient(AmbientLight aLight)
 		_polygons[i].SetColour(totR, totG, totB);
 	}
 }
+
+void Model::CalculateLightingPoint(std::vector<PointLight> pLights)
+{
+	int totR, totG, totB;
+	int tmpR, tmpG, tmpB;
+
+	for (int i = 0; i < _polygons.size(); i++)
+	{
+		totR = GetRValue(_polygons[i].GetColour());
+		totG = GetGValue(_polygons[i].GetColour());
+		totB = GetBValue(_polygons[i].GetColour());
+
+		for (int j = 0; j < pLights.size(); j++)
+		{
+			tmpR = pLights[j].GetR();
+			tmpG = pLights[j].GetG();
+			tmpB = pLights[j].GetB();
+
+			tmpR = tmpR * _kd_r;
+			tmpG = tmpG * _kd_g;
+			tmpB = tmpB * _kd_b;
+
+			Vector3D toLight = Vector3D(_transformedVertices[_polygons[i].GetIndex(0)].GetX() - pLights[j].GetPosition().GetX(),
+										_transformedVertices[_polygons[i].GetIndex(0)].GetY() - pLights[j].GetPosition().GetY(),
+										_transformedVertices[_polygons[i].GetIndex(0)].GetZ() - pLights[j].GetPosition().GetZ());
+
+			float attenuation = 1 / toLight.GetMagnitude() * pow(toLight.GetMagnitude(), 2);
+
+			Vector3D polyNormal = _polygons[i].GetNormal().GetNormalisedVector();
+			Vector3D toLightNormal = toLight.GetNormalisedVector();
+
+			float dotProd = Vector3D::DotProduct(toLightNormal, polyNormal);
+
+			tmpR = tmpR * dotProd * attenuation;
+			tmpG = tmpG * dotProd * attenuation;
+			tmpB = tmpB * dotProd * attenuation;
+
+			totR = totR + tmpR;
+			totG = totG + tmpG;
+			totB = totB + tmpB;
+		}
+
+		if (totR > 255)
+		{
+			totR = 255;
+		}
+		else if (totR < 0)
+		{
+			totR = 0;
+		}
+
+		if (totG > 255)
+		{
+			totG = 255;
+		}
+		else if (totG < 0)
+		{
+			totG = 0;
+		}
+
+		if (totB > 255)
+		{
+			totB = 255;
+		}
+		else if (totB < 0)
+		{
+			totB = 0;
+		}
+
+		_polygons[i].SetColour(totR, totG, totB);
+	}
+}

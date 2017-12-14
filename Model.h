@@ -6,6 +6,7 @@
 #include "Matrix.h"
 #include "DirectionalLight.h"
 #include "AmbientLight.h"
+#include "PointLight.h"
 
 class Model
 {
@@ -33,6 +34,7 @@ public:
 
 	void CalculateLightingDirectional(std::vector<DirectionalLight> dLights);
 	void CalculateLightingAmbient(AmbientLight aLight);
+	void CalculateLightingPoint(std::vector<PointLight> pLights);
 
 private:
 	std::vector<Polygon3D> _polygons;
@@ -44,9 +46,9 @@ private:
 	float _ka_g = 0.2f;
 	float _ka_b = 0.2f;
 
-	float _kd_r = 0.8f;
-	float _kd_g = 0.8f;
-	float _kd_b = 0.8f;
+	float _kd_r = 0.5f;
+	float _kd_g = 0.5f;
+	float _kd_b = 0.5f;
 
 	float _ks_r = 0.8f;
 	float _ks_g = 0.8f;
