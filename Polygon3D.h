@@ -25,7 +25,7 @@ public:
 
 private:
 	int _indices[3];
-	bool _markedForCulling = false;
+	bool _markedForCulling;
 	Vector3D _normal;
 };
 

@@ -25,6 +25,9 @@ Polygon3D::Polygon3D(const Polygon3D &p)
 	{
 		_indices[i] = p.GetIndex(i);
 	}
+
+	_markedForCulling = p.IsMarkedForCulling();
+	_normal = p.GetNormal();
 }
 
 Polygon3D::~Polygon3D()
