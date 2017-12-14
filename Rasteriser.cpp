@@ -33,8 +33,8 @@ void Rasteriser::Render(Bitmap &bitmap)
 	_model.ApplyTransformToOriginalVertices(_transform);
 	_model.CalculateBackfaces(_camera.GetPosition());
 	_model.CalculateLightingAmbient(AmbientLight(100, 100, 100));
-	//_model.CalculateLightingDirectional(_dLights);
-	//_model.CalculateLightingPoint(_pLights);
+	_model.CalculateLightingDirectional(_dLights);
+	_model.CalculateLightingPoint(_pLights);
 	_model.ApplyTransformToTransformedVertices(_camera.GetCamMatrix());
 	_model.Sort();
 	_model.ApplyTransformToTransformedVertices(_perspectiveMatrix);
