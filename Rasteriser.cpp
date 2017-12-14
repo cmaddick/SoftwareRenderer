@@ -37,7 +37,8 @@ void Rasteriser::Render(Bitmap &bitmap)
 	// Clear the window to black
 	bitmap.Clear(RGB(0, 0, 0));
 
-	DrawWireFrame(bitmap);
+	//DrawWireFrame(bitmap);
+	DrawSolidFlat(bitmap);
 }
 
 void Rasteriser::GeneratePerspectiveMatrix(float d, float aspectRatio)
@@ -82,5 +83,46 @@ void Rasteriser::DrawWireFrame(Bitmap &bitmap)
 			LineTo(hDC, vert2.GetX(), vert2.GetY());
 			LineTo(hDC, vert0.GetX(), vert0.GetY());
 		}
+	}
+}
+
+void Rasteriser::DrawSolidFlat(Bitmap &bitmap)
+{
+	std::vector<Polygon3D> polygons = _model.GetPolygons();
+	HPEN pen = CreatePen(PS_SOLID, 1, RGB(0, 0, 255));
+	HBRUSH brush = CreateSolidBrush(RGB(0, 0, 255));
+	int ind0, ind1, ind2;
+	Vertex vert0, vert1, vert2;
+	std::vector<Vertex> vertices;
+	HDC hDC;
+
+	hDC = bitmap.GetDC();
+
+	vertices = _model.GetTransformedVertices();
+
+	SelectObject(hDC, pen);
+	SelectObject(hDC, brush);
+
+	for (std::vector<Polygon3D>::iterator it = polygons.begin(); it != polygons.end(); it++)
+	{
+		ind0 = it->GetIndex(0);
+		ind1 = it->GetIndex(1);
+		ind2 = it->GetIndex(2);
+
+		vert0 = vertices[ind0];
+		vert1 = vertices[ind1];
+		vert2 = vertices[ind2];
+
+		POINT points[3];
+
+		points[0].x = vert0.GetX();
+		points[1].x = vert1.GetX();
+		points[2].x = vert2.GetX();
+
+		points[0].y = vert0.GetY();
+		points[1].y = vert1.GetY();
+		points[2].y = vert2.GetY();
+
+		Polygon(hDC, points, 3);
 	}
 }

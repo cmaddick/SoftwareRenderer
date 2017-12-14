@@ -17,6 +17,7 @@ public:
 	void GenerateViewMatrix(float d, int width, int height);
 
 	void DrawWireFrame(Bitmap &bitmap);
+	void DrawSolidFlat(Bitmap &bitmap);
 
 private:
 	Model _model;
