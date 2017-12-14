@@ -36,6 +36,6 @@ private:
 	float _avgZDepth;
 
 	// Colour
-	COLORREF _colour = RGB(255, 255, 255);
+	COLORREF _colour = RGB(0, 0, 0);
 };
 

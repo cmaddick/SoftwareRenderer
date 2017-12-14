@@ -22,7 +22,7 @@ public:
 
 private:
 	Model _model;
-	Camera _camera = Camera(0.0f, 0.0f, 0.0f, Vertex(0.0f, 0.0f, 250.0f, 1.0f));
+	Camera _camera = Camera(0.0f, 0.0f, 0.0f, Vertex(0.0f, 0.0f, 50.0f, 1.0f));
 	Matrix _viewMatrix;
 	Matrix _perspectiveMatrix;
 	Matrix _transform;

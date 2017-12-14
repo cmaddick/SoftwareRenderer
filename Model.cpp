@@ -151,9 +151,9 @@ void Model::CalculateLightingDirectional(std::vector<DirectionalLight> dLights)
 
 	for (int i = 0; i < _polygons.size(); i++)
 	{
-		totR = 0;
-		totG = 0;
-		totB = 0;
+		totR = GetRValue(_polygons[i].GetColour());
+		totG = GetGValue(_polygons[i].GetColour());
+		totB = GetBValue(_polygons[i].GetColour());
 
 		for (int j = 0; j < dLights.size(); j++)
 		{
@@ -205,6 +205,29 @@ void Model::CalculateLightingDirectional(std::vector<DirectionalLight> dLights)
 		{
 			totB = 0;
 		}
+
+		_polygons[i].SetColour(totR, totG, totB);
+	}
+}
+
+void Model::CalculateLightingAmbient(AmbientLight aLight)
+{
+	int totR, totG, totB;
+	int tmpR, tmpG, tmpB;
+
+	for (int i = 0; i < _polygons.size(); i++)
+	{
+		totR = 0;
+		totG = 0;
+		totB = 0;
+
+		tmpR = aLight.GetR();
+		tmpG = aLight.GetG();
+		tmpB = aLight.GetB();
+
+		totR = tmpR * _ka_r;
+		totG = tmpG * _ka_g;
+		totB = tmpB * _ka_b;
 
 		_polygons[i].SetColour(totR, totG, totB);
 	}

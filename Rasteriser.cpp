@@ -9,7 +9,7 @@ Rasteriser app;
 bool Rasteriser::Initialise()
 {
 	// Initalise and load the model into a model instance
-	if (!MD2Loader::LoadModel("car.md2", _model, &Model::AddPolygon, &Model::AddVertex))
+	if (!MD2Loader::LoadModel("cartman.md2", _model, &Model::AddPolygon, &Model::AddVertex))
 	{
 		return false;
 	}
@@ -31,6 +31,7 @@ void Rasteriser::Render(Bitmap &bitmap)
 {	
 	_model.ApplyTransformToOriginalVertices(_transform);
 	_model.CalculateBackfaces(_camera.GetPosition());
+	_model.CalculateLightingAmbient(AmbientLight(100, 100, 100));
 	_model.CalculateLightingDirectional(_dLights);
 	_model.ApplyTransformToTransformedVertices(_camera.GetCamMatrix());
 	_model.Sort();
