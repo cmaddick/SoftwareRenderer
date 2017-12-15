@@ -68,24 +68,28 @@ void Rasteriser::Render(Bitmap &bitmap)
 		_model.ApplyTransformToOriginalVertices(_transform);
 	}
 
+	// Backface culling
 	if (_frameNo >= 2600)
 	{
 		_message.assign(L"Wireframe backface cull");
 		_model.CalculateBackfaces(_camera.GetPosition());
 	}
 
+	// Ambient light
 	if (_frameNo >= 3800)
 	{
 		_message.assign(L"Flat shading + ambient");
 		_model.CalculateLightingAmbient(AmbientLight(100, 100, 100));
 	}
 
+	// Directional light
 	if (_frameNo >= 4400)
 	{
 		_message.assign(L"Flat shading + ambient + directional");
 		_model.CalculateLightingDirectional(_dLights);
 	}
 
+	// Point light
 	if (_frameNo >= 5000)
 	{
 		_message.assign(L"Flat shading + ambient + directional + point light");
@@ -93,6 +97,7 @@ void Rasteriser::Render(Bitmap &bitmap)
 	}
 	_model.ApplyTransformToTransformedVertices(_camera.GetCamMatrix());
 	
+	// Z depth sort
 	if (_frameNo >= 3200)
 	{
 		if (_frameNo < 3800)
