@@ -59,7 +59,7 @@ void Rasteriser::Render(Bitmap &bitmap)
 			_delta = 0.0f;
 		}
 
-		_message.assign(L"Wireframe translation");
+		_message.assign(L"Wireframe XYZ simulateous translation");
 		_model.ApplyTransformToOriginalVertices(Matrix::TranslationMatrix(_delta, _delta, _delta));
 	}
 	else
