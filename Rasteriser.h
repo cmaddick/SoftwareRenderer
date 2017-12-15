@@ -1,5 +1,6 @@
 #pragma once
 #include <vector>
+#include <string>
 #include "Framework.h"
 #include "Vertex.h"
 #include "Matrix.h"
@@ -20,6 +21,7 @@ public:
 
 	void DrawWireFrame(Bitmap &bitmap);
 	void DrawSolidFlat(Bitmap &bitmap);
+	void DrawString(Bitmap &bitmap, LPCTSTR text);
 
 private:
 	Model _model;
@@ -31,6 +33,10 @@ private:
 	Matrix _transform;
 
 	float _delta = 0.0f;
+
+	long _frameNo = 0;
+
+	std::wstring _message;
 
 	// Lights
 	std::vector<DirectionalLight> _dLights;

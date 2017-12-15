@@ -168,9 +168,9 @@ void Model::CalculateLightingDirectional(std::vector<DirectionalLight> dLights)
 			tmpB = dLights[j].GetB();
 
 			// Apply reflection coefficients
-			tmpR = tmpR * _kd_r;
-			tmpG = tmpG * _kd_g;
-			tmpB = tmpB * _kd_b;
+			tmpR = (int)(tmpR * _kd_r);
+			tmpG = (int)(tmpG * _kd_g);
+			tmpB = (int)(tmpB * _kd_b);
 
 			// Normalise vectors
 			Vector3D lightNormal = dLights[j].GetDirection().GetNormalisedVector();
@@ -178,9 +178,9 @@ void Model::CalculateLightingDirectional(std::vector<DirectionalLight> dLights)
 
 			float dotProd = Vector3D::DotProduct(lightNormal, polyNormal);
 
-			tmpR = tmpR * dotProd;
-			tmpG = tmpG * dotProd;
-			tmpB = tmpB * dotProd;
+			tmpR = (int)(tmpR * dotProd);
+			tmpG = (int)(tmpG * dotProd);
+			tmpB = (int)(tmpB * dotProd);
 
 			totR = totR + tmpR;
 			totG = totG + tmpG;
@@ -234,9 +234,9 @@ void Model::CalculateLightingAmbient(AmbientLight aLight)
 		tmpG = aLight.GetG();
 		tmpB = aLight.GetB();
 
-		totR = tmpR * _ka_r;
-		totG = tmpG * _ka_g;
-		totB = tmpB * _ka_b;
+		totR = (int)(tmpR * _ka_r);
+		totG = (int)(tmpG * _ka_g);
+		totB = (int)(tmpB * _ka_b);
 
 		_polygons[i].SetColour(totR, totG, totB);
 	}
@@ -261,9 +261,9 @@ void Model::CalculateLightingPoint(std::vector<PointLight> pLights)
 			tmpB = pLights[j].GetB();
 
 			// Apply reflection coefficients
-			tmpR = tmpR * _kd_r;
-			tmpG = tmpG * _kd_g;
-			tmpB = tmpB * _kd_b;
+			tmpR = (int)(tmpR * _kd_r);
+			tmpG = (int)(tmpG * _kd_g);
+			tmpB = (int)(tmpB * _kd_b);
 
 			// Calculate vector TO the light source position
 			Vector3D toLight = Vector3D(_transformedVertices[_polygons[i].GetIndex(0)].GetX() - pLights[j].GetPosition().GetX(),
@@ -278,9 +278,9 @@ void Model::CalculateLightingPoint(std::vector<PointLight> pLights)
 
 			float dotProd = Vector3D::DotProduct(toLightNormal, polyNormal);
 
-			tmpR = tmpR * dotProd * attenuation;
-			tmpG = tmpG * dotProd * attenuation;
-			tmpB = tmpB * dotProd * attenuation;
+			tmpR = (int)(tmpR * dotProd * attenuation);
+			tmpG = (int)(tmpG * dotProd * attenuation);
+			tmpB = (int)(tmpB * dotProd * attenuation);
 
 			totR = totR + tmpR;
 			totG = totG + tmpG;

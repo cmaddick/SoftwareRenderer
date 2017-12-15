@@ -23,7 +23,7 @@ bool Rasteriser::Initialise()
 
 void Rasteriser::Update(Bitmap &bitmap)
 {
-	_transform = Matrix::XYZRotationMatrix(_delta, _delta, _delta);
+	_transform = Matrix::YRotationMatrix(_delta);
 	GeneratePerspectiveMatrix(1, (float)bitmap.GetWidth() / (float)bitmap.GetHeight());
 	GenerateViewMatrix(1, bitmap.GetWidth(), bitmap.GetHeight());
 	_delta = _delta + 0.01f;
@@ -31,13 +31,76 @@ void Rasteriser::Update(Bitmap &bitmap)
 
 void Rasteriser::Render(Bitmap &bitmap)
 {	
-	_model.ApplyTransformToOriginalVertices(_transform);
-	_model.CalculateBackfaces(_camera.GetPosition());
-	_model.CalculateLightingAmbient(AmbientLight(100, 100, 100));
-	_model.CalculateLightingDirectional(_dLights);
-	_model.CalculateLightingPoint(_pLights);
+	// Model transformations
+	if (_frameNo >= 600 && _frameNo < 1200)
+	{
+		_message.assign(L"Wireframe X rotation");
+		_model.ApplyTransformToOriginalVertices(Matrix::XRotationMatrix(_delta));
+	}
+	else if (_frameNo >= 1200 && _frameNo < 1800)
+	{
+		_message.assign(L"Wireframe Z rotation");
+		_model.ApplyTransformToOriginalVertices(Matrix::ZRotationMatrix(_delta));
+	}
+	else if (_frameNo >= 1800 && _frameNo < 2000)
+	{
+		if (_frameNo == 1800)
+		{
+			_delta = 0.0f;
+		}
+
+		_message.assign(L"Wireframe scaling");
+		_model.ApplyTransformToOriginalVertices(Matrix::ScalingMatrix(_delta, _delta, _delta));
+	}
+	else if (_frameNo >= 2000 && _frameNo < 2600)
+	{
+		if (_frameNo == 1800)
+		{
+			_delta = 0.0f;
+		}
+
+		_message.assign(L"Wireframe translation");
+		_model.ApplyTransformToOriginalVertices(Matrix::TranslationMatrix(_delta, _delta, _delta));
+	}
+	else
+	{
+		_message.assign(L"Wireframe Y rotation");
+		_model.ApplyTransformToOriginalVertices(_transform);
+	}
+
+	if (_frameNo >= 2600)
+	{
+		_message.assign(L"Wireframe backface cull");
+		_model.CalculateBackfaces(_camera.GetPosition());
+	}
+
+	if (_frameNo >= 3800)
+	{
+		_message.assign(L"Flat shading + ambient");
+		_model.CalculateLightingAmbient(AmbientLight(100, 100, 100));
+	}
+
+	if (_frameNo >= 4400)
+	{
+		_message.assign(L"Flat shading + ambient + directional");
+		_model.CalculateLightingDirectional(_dLights);
+	}
+
+	if (_frameNo >= 5000)
+	{
+		_message.assign(L"Flat shading + ambient + directional + point light");
+		_model.CalculateLightingPoint(_pLights);
+	}
 	_model.ApplyTransformToTransformedVertices(_camera.GetCamMatrix());
-	_model.Sort();
+	
+	if (_frameNo >= 3200)
+	{
+		if (_frameNo < 3800)
+		{
+			_message.assign(L"Wireframe backface cull + z depth");
+		}
+		_model.Sort();
+	}
 	_model.ApplyTransformToTransformedVertices(_perspectiveMatrix);
 	_model.DehomogenizeVertices();
 	_model.ApplyTransformToTransformedVertices(_viewMatrix);
@@ -45,8 +108,17 @@ void Rasteriser::Render(Bitmap &bitmap)
 	// Clear the window to black
 	bitmap.Clear(RGB(0, 0, 0));
 
-	//DrawWireFrame(bitmap);
-	DrawSolidFlat(bitmap);
+	if (_frameNo < 3800)
+	{
+		DrawWireFrame(bitmap);
+	}
+	else
+	{
+		DrawSolidFlat(bitmap);
+	}
+	
+	// Increment frame number
+	_frameNo++;
 }
 
 void Rasteriser::GeneratePerspectiveMatrix(float d, float aspectRatio)
@@ -72,6 +144,8 @@ void Rasteriser::DrawWireFrame(Bitmap &bitmap)
 
 	hDC = bitmap.GetDC();
 	
+	DrawString(bitmap, (LPCTSTR)_message.c_str());
+	
 	vertices = _model.GetTransformedVertices();
 
 	SelectObject(hDC, pen);
@@ -88,10 +162,10 @@ void Rasteriser::DrawWireFrame(Bitmap &bitmap)
 
 		if (!it->IsMarkedForCulling())
 		{
-			MoveToEx(hDC, vert0.GetX(), vert0.GetY(), nullptr);
-			LineTo(hDC, vert1.GetX(), vert1.GetY());
-			LineTo(hDC, vert2.GetX(), vert2.GetY());
-			LineTo(hDC, vert0.GetX(), vert0.GetY());
+			MoveToEx(hDC, (int)vert0.GetX(), (int)vert0.GetY(), nullptr);
+			LineTo(hDC, (int)vert1.GetX(), (int)vert1.GetY());
+			LineTo(hDC, (int)vert2.GetX(), (int)vert2.GetY());
+			LineTo(hDC, (int)vert0.GetX(), (int)vert0.GetY());
 		}
 	}
 }
@@ -109,6 +183,8 @@ void Rasteriser::DrawSolidFlat(Bitmap &bitmap)
 	HDC hDC;
 
 	hDC = bitmap.GetDC();
+
+	DrawString(bitmap, (LPCTSTR)_message.c_str());
 
 	vertices = _model.GetTransformedVertices();
 
@@ -130,13 +206,13 @@ void Rasteriser::DrawSolidFlat(Bitmap &bitmap)
 
 		POINT points[3];
 
-		points[0].x = vert0.GetX();
-		points[1].x = vert1.GetX();
-		points[2].x = vert2.GetX();
+		points[0].x = (LONG)vert0.GetX();
+		points[1].x = (LONG)vert1.GetX();
+		points[2].x = (LONG)vert2.GetX();
 
-		points[0].y = vert0.GetY();
-		points[1].y = vert1.GetY();
-		points[2].y = vert2.GetY();
+		points[0].y = (LONG)vert0.GetY();
+		points[1].y = (LONG)vert1.GetY();
+		points[2].y = (LONG)vert2.GetY();
 
 		if (!it->IsMarkedForCulling())
 		{
@@ -147,4 +223,28 @@ void Rasteriser::DrawSolidFlat(Bitmap &bitmap)
 		DeleteObject(pen);
 		DeleteObject(brush);
 	}
+}
+
+void Rasteriser::DrawString(Bitmap &bitmap, LPCTSTR text)
+{
+	HDC hdc = bitmap.GetDC();
+	HFONT hFont, hOldFont;
+
+	// Retrieve a handle to the variable stock font.  
+	hFont = hFont = CreateFont(48, 0, 0, 0, FW_DONTCARE, FALSE, FALSE, FALSE, DEFAULT_CHARSET, OUT_OUTLINE_PRECIS,
+		CLIP_DEFAULT_PRECIS, CLEARTYPE_QUALITY, VARIABLE_PITCH, TEXT("Myfont"));
+
+	// Select the variable stock font into the specified device context. 
+	if (hOldFont = (HFONT)SelectObject(hdc, hFont))
+	{
+		SetTextColor(hdc, RGB(255, 255, 255));
+		SetBkColor(hdc, RGB(0, 0, 0));
+
+		// Display the text string.  
+		TextOut(hdc, 10, 10, text, lstrlen(text));
+
+		// Restore the original font.        
+		SelectObject(hdc, hOldFont);
+	}
+	DeleteObject(hFont);
 }
