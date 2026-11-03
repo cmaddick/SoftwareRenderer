@@ -21,6 +21,7 @@ public:
 
 	void DrawWireFrame(Bitmap &bitmap);
 	void DrawSolidFlat(Bitmap &bitmap);
+	void FillTriangle(Bitmap &bitmap, const Vertex &v0, const Vertex &v1, const Vertex &v2, COLORREF colour);
 	void DrawString(Bitmap &bitmap, LPCTSTR text);
 
 private:
@@ -34,9 +35,30 @@ private:
 
 	float _delta = 0.0f;
 
-	long _frameNo = 0;
+	// Feature walkthrough stages, in the order they are shown
+	enum
+	{
+		STAGE_Y_ROTATION,
+		STAGE_X_ROTATION,
+		STAGE_Z_ROTATION,
+		STAGE_SCALING,
+		STAGE_TRANSLATION,
+		STAGE_BACKFACE_CULL,
+		STAGE_Z_DEPTH,
+		STAGE_AMBIENT,
+		STAGE_DIRECTIONAL,
+		STAGE_POINT,
+		STAGE_COUNT
+	};
+	static const ULONGLONG STAGE_LENGTH_MS = 5000;
+
+	ULONGLONG _startTime = 0;
+	int _stage = -1;
 
 	std::wstring _message;
+
+	// One depth per pixel, holding 1 / camera-space z of the nearest polygon drawn so far
+	std::vector<float> _depthBuffer;
 
 	// Lights
 	std::vector<DirectionalLight> _dLights;

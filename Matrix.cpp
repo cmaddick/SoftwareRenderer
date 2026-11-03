@@ -123,7 +123,7 @@ Matrix Matrix::XRotationMatrix(float angle)
 {
 	Matrix rotation;
 
-	rotation = Matrix({ 1, 0, 0, 0, 0, cos(angle), -(sin(angle)), 0, 0, sin(angle), cos(angle), 0, 0, 0, 0, 1 });
+	rotation = Matrix({ 1, 0, 0, 0, 0, cosf(angle), -(sinf(angle)), 0, 0, sinf(angle), cosf(angle), 0, 0, 0, 0, 1 });
 
 	return rotation;
 }
@@ -132,7 +132,7 @@ Matrix Matrix::YRotationMatrix(float angle)
 {
 	Matrix rotation;
 
-	rotation = Matrix({ cos(angle), 0, sin(angle), 0, 0, 1, 0, 0, -(sin(angle)), 0, cos(angle), 0, 0, 0, 0, 1 });
+	rotation = Matrix({ cosf(angle), 0, sinf(angle), 0, 0, 1, 0, 0, -(sinf(angle)), 0, cosf(angle), 0, 0, 0, 0, 1 });
 
 	return rotation;
 }
@@ -141,7 +141,7 @@ Matrix Matrix::ZRotationMatrix(float angle)
 {
 	Matrix rotation;
 
-	rotation = Matrix({ cos(angle), -(sin(angle)), 0, 0, sin(angle), cos(angle), 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 });
+	rotation = Matrix({ cosf(angle), -(sinf(angle)), 0, 0, sinf(angle), cosf(angle), 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 });
 
 	return rotation;
 }

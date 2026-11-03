@@ -31,9 +31,9 @@ public:
 
 private:
 	int _indices[3];
-	bool _markedForCulling;
+	bool _markedForCulling = false;
 	Vector3D _normal;
-	float _avgZDepth;
+	float _avgZDepth = 0.0f;
 
 	// Colour
 	COLORREF _colour = RGB(0, 0, 0);

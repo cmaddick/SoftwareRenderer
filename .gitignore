@@ -1,2 +1,6 @@
 .vs/
 Debug/
+Rasteriser/
+x64/
+*.aps
+*.vcxproj.user
