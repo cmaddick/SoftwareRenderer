@@ -30,12 +30,12 @@ std::vector<Vertex>& Model::GetTransformedVertices()
 
 size_t Model::GetPolygonCount() const
 {
-	return sizeof _polygons;
+	return _polygons.size();
 }
 
 size_t Model::GetVertexCount() const
 {
-	return sizeof _vertices;
+	return _vertices.size();
 }
 
 void Model::AddVertex(float x, float y, float z)
