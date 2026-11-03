@@ -35,7 +35,25 @@ private:
 
 	float _delta = 0.0f;
 
-	long _frameNo = 0;
+	// Feature walkthrough stages, in the order they are shown
+	enum
+	{
+		STAGE_Y_ROTATION,
+		STAGE_X_ROTATION,
+		STAGE_Z_ROTATION,
+		STAGE_SCALING,
+		STAGE_TRANSLATION,
+		STAGE_BACKFACE_CULL,
+		STAGE_Z_DEPTH,
+		STAGE_AMBIENT,
+		STAGE_DIRECTIONAL,
+		STAGE_POINT,
+		STAGE_COUNT
+	};
+	static const ULONGLONG STAGE_LENGTH_MS = 5000;
+
+	ULONGLONG _startTime = 0;
+	int _stage = -1;
 
 	std::wstring _message;
 

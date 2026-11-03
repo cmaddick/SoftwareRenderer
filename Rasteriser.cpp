@@ -19,6 +19,9 @@ bool Rasteriser::Initialise()
 	_dLights.push_back(DirectionalLight(200, 0, 0));
 	_pLights.push_back(PointLight(0, 200, 250, Vertex(20, 50, -50, 0.0f)));
 
+	// Start the feature walkthrough clock
+	_startTime = GetTickCount64();
+
 	return true;
 }
 
@@ -31,35 +34,47 @@ void Rasteriser::Update(Bitmap &bitmap)
 }
 
 void Rasteriser::Render(Bitmap &bitmap)
-{	
+{
+	// Work out which walkthrough stage we are in. Each stage lasts STAGE_LENGTH_MS
+	// of real time, and the walkthrough loops after the last one.
+	int stage = (int)(((GetTickCount64() - _startTime) / STAGE_LENGTH_MS) % STAGE_COUNT);
+
+	if (stage != _stage)
+	{
+		_stage = stage;
+
+		if (_stage == STAGE_Y_ROTATION)
+		{
+			// Starting the walkthrough again, so draw every polygon until culling is re-enabled
+			for (Polygon3D &polygon : _model.GetPolygons())
+			{
+				polygon.UnMarkForCulling();
+			}
+		}
+		else if (_stage == STAGE_SCALING || _stage == STAGE_TRANSLATION)
+		{
+			_delta = 0.0f;
+		}
+	}
+
 	// Model transformations
-	if (_frameNo >= 600 && _frameNo < 1200)
+	if (_stage == STAGE_X_ROTATION)
 	{
 		_message.assign(L"Wireframe X rotation");
 		_model.ApplyTransformToOriginalVertices(Matrix::XRotationMatrix(_delta));
 	}
-	else if (_frameNo >= 1200 && _frameNo < 1800)
+	else if (_stage == STAGE_Z_ROTATION)
 	{
 		_message.assign(L"Wireframe Z rotation");
 		_model.ApplyTransformToOriginalVertices(Matrix::ZRotationMatrix(_delta));
 	}
-	else if (_frameNo >= 1800 && _frameNo < 2000)
+	else if (_stage == STAGE_SCALING)
 	{
-		if (_frameNo == 1800)
-		{
-			_delta = 0.0f;
-		}
-
 		_message.assign(L"Wireframe scaling");
 		_model.ApplyTransformToOriginalVertices(Matrix::ScalingMatrix(_delta, _delta, _delta));
 	}
-	else if (_frameNo >= 2000 && _frameNo < 2600)
+	else if (_stage == STAGE_TRANSLATION)
 	{
-		if (_frameNo == 2000)
-		{
-			_delta = 0.0f;
-		}
-
 		_message.assign(L"Wireframe XYZ simulateous translation");
 		_model.ApplyTransformToOriginalVertices(Matrix::TranslationMatrix(_delta, _delta, _delta));
 	}
@@ -70,28 +85,28 @@ void Rasteriser::Render(Bitmap &bitmap)
 	}
 
 	// Backface culling
-	if (_frameNo >= 2600)
+	if (_stage >= STAGE_BACKFACE_CULL)
 	{
 		_message.assign(L"Wireframe backface cull");
 		_model.CalculateBackfaces(_camera.GetPosition());
 	}
 
 	// Ambient light
-	if (_frameNo >= 3800)
+	if (_stage >= STAGE_AMBIENT)
 	{
 		_message.assign(L"Flat shading + ambient");
 		_model.CalculateLightingAmbient(AmbientLight(100, 100, 100));
 	}
 
 	// Directional light
-	if (_frameNo >= 4400)
+	if (_stage >= STAGE_DIRECTIONAL)
 	{
 		_message.assign(L"Flat shading + ambient + directional");
 		_model.CalculateLightingDirectional(_dLights);
 	}
 
 	// Point light
-	if (_frameNo >= 5000)
+	if (_stage >= STAGE_POINT)
 	{
 		_message.assign(L"Flat shading + ambient + directional + point light");
 		_model.CalculateLightingPoint(_pLights);
@@ -99,9 +114,9 @@ void Rasteriser::Render(Bitmap &bitmap)
 	_model.ApplyTransformToTransformedVertices(_camera.GetCamMatrix());
 	
 	// Z depth sort
-	if (_frameNo >= 3200)
+	if (_stage >= STAGE_Z_DEPTH)
 	{
-		if (_frameNo < 3800)
+		if (_stage < STAGE_AMBIENT)
 		{
 			_message.assign(L"Wireframe backface cull + z depth");
 		}
@@ -114,7 +129,7 @@ void Rasteriser::Render(Bitmap &bitmap)
 	// Clear the window to black
 	bitmap.Clear(RGB(0, 0, 0));
 
-	if (_frameNo < 3800)
+	if (_stage < STAGE_AMBIENT)
 	{
 		DrawWireFrame(bitmap);
 	}
@@ -122,9 +137,6 @@ void Rasteriser::Render(Bitmap &bitmap)
 	{
 		DrawSolidFlat(bitmap);
 	}
-	
-	// Increment frame number
-	_frameNo++;
 }
 
 void Rasteriser::GeneratePerspectiveMatrix(float d, float aspectRatio)
