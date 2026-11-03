@@ -153,7 +153,7 @@ void Rasteriser::DrawWireFrame(Bitmap &bitmap)
 	
 	vertices = _model.GetTransformedVertices();
 
-	SelectObject(hDC, pen);
+	HGDIOBJ oldPen = SelectObject(hDC, pen);
 
 	for (std::vector<Polygon3D>::iterator it = polygons.begin(); it != polygons.end(); it++)
 	{
@@ -173,6 +173,10 @@ void Rasteriser::DrawWireFrame(Bitmap &bitmap)
 			LineTo(hDC, (int)vert0.GetX(), (int)vert0.GetY());
 		}
 	}
+
+	// Restore the original pen before deleting ours so it isn't leaked
+	SelectObject(hDC, oldPen);
+	DeleteObject(pen);
 }
 
 void Rasteriser::DrawSolidFlat(Bitmap &bitmap)
@@ -180,8 +184,6 @@ void Rasteriser::DrawSolidFlat(Bitmap &bitmap)
 	// Draws and fills polygons with the appropriate colour that make up the model
 
 	std::vector<Polygon3D> polygons = _model.GetPolygons();
-	HPEN pen = CreatePen(PS_SOLID, 1, RGB(0, 0, 255));
-	HBRUSH brush = CreateSolidBrush(RGB(0, 0, 0));
 	int ind0, ind1, ind2;
 	Vertex vert0, vert1, vert2;
 	std::vector<Vertex> vertices;
@@ -198,8 +200,8 @@ void Rasteriser::DrawSolidFlat(Bitmap &bitmap)
 		HPEN pen = CreatePen(PS_SOLID, 1, it->GetColour());
 		HBRUSH brush = CreateSolidBrush(it->GetColour());
 
-		SelectObject(hDC, pen);
-		SelectObject(hDC, brush);
+		HGDIOBJ oldPen = SelectObject(hDC, pen);
+		HGDIOBJ oldBrush = SelectObject(hDC, brush);
 
 		ind0 = it->GetIndex(0);
 		ind1 = it->GetIndex(1);
@@ -224,7 +226,9 @@ void Rasteriser::DrawSolidFlat(Bitmap &bitmap)
 			Polygon(hDC, points, 3);
 		}
 
-		// Delete pen and brush because of resource issues
+		// Deselect then delete pen and brush because of resource issues
+		SelectObject(hDC, oldPen);
+		SelectObject(hDC, oldBrush);
 		DeleteObject(pen);
 		DeleteObject(brush);
 	}
