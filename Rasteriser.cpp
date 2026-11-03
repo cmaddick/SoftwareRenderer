@@ -54,7 +54,7 @@ void Rasteriser::Render(Bitmap &bitmap)
 	}
 	else if (_frameNo >= 2000 && _frameNo < 2600)
 	{
-		if (_frameNo == 1800)
+		if (_frameNo == 2000)
 		{
 			_delta = 0.0f;
 		}
