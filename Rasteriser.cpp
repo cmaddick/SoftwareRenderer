@@ -2,6 +2,7 @@
 #include "Matrix.h"
 #include "MD2Loader.h"
 #include <math.h>
+#include <float.h>
 #include <initializer_list>
 
 Rasteriser app;
@@ -128,7 +129,10 @@ void Rasteriser::Render(Bitmap &bitmap)
 
 void Rasteriser::GeneratePerspectiveMatrix(float d, float aspectRatio)
 {
-	_perspectiveMatrix = Matrix({ d / aspectRatio, 0, 0, 0, 0, d, 0, 0, 0, 0, d, 0, 0, 0, 1, 0 });
+	// The third row outputs w (always 1) rather than d * z, so after dehomogenising
+	// each vertex's z holds 1 / camera-space z. Unlike camera-space z itself, 1 / z
+	// interpolates linearly across the screen, which is what the depth buffer needs.
+	_perspectiveMatrix = Matrix({ d / aspectRatio, 0, 0, 0, 0, d, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0 });
 }
 
 void Rasteriser::GenerateViewMatrix(float d, int width, int height)
@@ -181,56 +185,98 @@ void Rasteriser::DrawWireFrame(Bitmap &bitmap)
 
 void Rasteriser::DrawSolidFlat(Bitmap &bitmap)
 {
-	// Draws and fills polygons with the appropriate colour that make up the model
+	// Draws and fills polygons with the appropriate colour that make up the model,
+	// using a per-pixel depth buffer so overlapping polygons are always resolved
+	// correctly, whatever order they are drawn in
 
 	std::vector<Polygon3D> polygons = _model.GetPolygons();
 	int ind0, ind1, ind2;
-	Vertex vert0, vert1, vert2;
 	std::vector<Vertex> vertices;
-	HDC hDC;
-
-	hDC = bitmap.GetDC();
 
 	DrawString(bitmap, (LPCTSTR)_message.c_str());
+
+	// Make sure GDI has finished drawing before we write pixels directly
+	GdiFlush();
+
+	// Reset the depth buffer to "infinitely far away"
+	_depthBuffer.assign(bitmap.GetWidth() * bitmap.GetHeight(), FLT_MAX);
 
 	vertices = _model.GetTransformedVertices();
 
 	for (std::vector<Polygon3D>::iterator it = polygons.begin(); it != polygons.end(); it++)
 	{
-		HPEN pen = CreatePen(PS_SOLID, 1, it->GetColour());
-		HBRUSH brush = CreateSolidBrush(it->GetColour());
-
-		HGDIOBJ oldPen = SelectObject(hDC, pen);
-		HGDIOBJ oldBrush = SelectObject(hDC, brush);
+		if (it->IsMarkedForCulling())
+		{
+			continue;
+		}
 
 		ind0 = it->GetIndex(0);
 		ind1 = it->GetIndex(1);
 		ind2 = it->GetIndex(2);
 
-		vert0 = vertices[ind0];
-		vert1 = vertices[ind1];
-		vert2 = vertices[ind2];
+		FillTriangle(bitmap, vertices[ind0], vertices[ind1], vertices[ind2], it->GetColour());
+	}
+}
 
-		POINT points[3];
+void Rasteriser::FillTriangle(Bitmap &bitmap, const Vertex &v0, const Vertex &v1, const Vertex &v2, COLORREF colour)
+{
+	// Fills a triangle in screen space, writing only the pixels that are nearer
+	// than what is already in the depth buffer. Vertex z holds 1 / camera-space z,
+	// which gets smaller as polygons get nearer the camera.
 
-		points[0].x = (LONG)vert0.GetX();
-		points[1].x = (LONG)vert1.GetX();
-		points[2].x = (LONG)vert2.GetX();
+	DWORD* pixels = bitmap.GetPixels();
+	int width = (int)bitmap.GetWidth();
+	int height = (int)bitmap.GetHeight();
 
-		points[0].y = (LONG)vert0.GetY();
-		points[1].y = (LONG)vert1.GetY();
-		points[2].y = (LONG)vert2.GetY();
+	if (pixels == nullptr)
+	{
+		return;
+	}
 
-		if (!it->IsMarkedForCulling())
+	// Twice the signed area of the triangle; zero means it has no area to fill
+	float area = (v1.GetX() - v0.GetX()) * (v2.GetY() - v0.GetY()) - (v1.GetY() - v0.GetY()) * (v2.GetX() - v0.GetX());
+	if (area == 0.0f)
+	{
+		return;
+	}
+
+	// Bounding box of the triangle, clipped to the bitmap
+	int minX = max(0, (int)floorf(min(v0.GetX(), min(v1.GetX(), v2.GetX()))));
+	int maxX = min(width - 1, (int)ceilf(max(v0.GetX(), max(v1.GetX(), v2.GetX()))));
+	int minY = max(0, (int)floorf(min(v0.GetY(), min(v1.GetY(), v2.GetY()))));
+	int maxY = min(height - 1, (int)ceilf(max(v0.GetY(), max(v1.GetY(), v2.GetY()))));
+
+	// DIB pixels are 0x00RRGGBB, whereas a COLORREF is 0x00BBGGRR
+	DWORD pixel = (GetRValue(colour) << 16) | (GetGValue(colour) << 8) | GetBValue(colour);
+
+	for (int y = minY; y <= maxY; y++)
+	{
+		float py = y + 0.5f;
+
+		for (int x = minX; x <= maxX; x++)
 		{
-			Polygon(hDC, points, 3);
-		}
+			float px = x + 0.5f;
 
-		// Deselect then delete pen and brush because of resource issues
-		SelectObject(hDC, oldPen);
-		SelectObject(hDC, oldBrush);
-		DeleteObject(pen);
-		DeleteObject(brush);
+			// Barycentric weights of the pixel centre. Dividing by the signed area
+			// makes them all non-negative inside the triangle, whatever its winding.
+			float w0 = ((v2.GetX() - v1.GetX()) * (py - v1.GetY()) - (v2.GetY() - v1.GetY()) * (px - v1.GetX())) / area;
+			float w1 = ((v0.GetX() - v2.GetX()) * (py - v2.GetY()) - (v0.GetY() - v2.GetY()) * (px - v2.GetX())) / area;
+			float w2 = 1.0f - w0 - w1;
+
+			if (w0 < 0.0f || w1 < 0.0f || w2 < 0.0f)
+			{
+				continue;
+			}
+
+			float depth = w0 * v0.GetZ() + w1 * v1.GetZ() + w2 * v2.GetZ();
+			int index = y * width + x;
+
+			if (depth < _depthBuffer[index])
+			{
+				_depthBuffer[index] = depth;
+				pixels[index] = pixel;
+			}
+		}
 	}
 }
 

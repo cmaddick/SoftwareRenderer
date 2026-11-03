@@ -5,6 +5,7 @@ Bitmap::Bitmap()
 	_hMemDC = 0;
 	_hBitmap = 0;
 	_hOldBitmap = 0;
+	_pixels = nullptr;
 	_width = 0;
 	_height = 0;
 }
@@ -34,8 +35,16 @@ bool Bitmap::Create(HWND hWnd, unsigned int width, unsigned int height)
 	_hMemDC = CreateCompatibleDC(hDc);
 	if (_hMemDC != 0)
 	{
-		// Create a bitmap compatible with the window
-		_hBitmap = CreateCompatibleBitmap(hDc, _width, _height);
+		// Create a 32-bit top-down DIB section so pixels can be written directly
+		// (needed for the depth buffer) as well as drawn on with GDI
+		BITMAPINFO bmi = {};
+		bmi.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
+		bmi.bmiHeader.biWidth = _width;
+		bmi.bmiHeader.biHeight = -(LONG)_height;
+		bmi.bmiHeader.biPlanes = 1;
+		bmi.bmiHeader.biBitCount = 32;
+		bmi.bmiHeader.biCompression = BI_RGB;
+		_hBitmap = CreateDIBSection(hDc, &bmi, DIB_RGB_COLORS, (void**)&_pixels, NULL, 0);
 		if (_hBitmap != 0)
 		{
 			// Select the bitmap into the new device context, saving any old bitmap handle
@@ -69,6 +78,14 @@ unsigned int Bitmap::GetHeight() const
 	return _height;
 }
 
+// Return the bitmap's pixels: one 0x00RRGGBB DWORD per pixel, rows top to bottom.
+// Call GdiFlush() before writing to them after any GDI drawing.
+
+DWORD* Bitmap::GetPixels() const
+{
+	return _pixels;
+}
+
 // Delete any existing bitmap
 
 void Bitmap::DeleteBitmap()
@@ -84,6 +101,7 @@ void Bitmap::DeleteBitmap()
 	{
 		DeleteObject(_hBitmap);
 		_hBitmap = 0;
+		_pixels = nullptr;
 	}
 	// Delete any existing bitmap device context
 	if (_hMemDC != 0)

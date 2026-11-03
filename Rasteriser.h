@@ -21,6 +21,7 @@ public:
 
 	void DrawWireFrame(Bitmap &bitmap);
 	void DrawSolidFlat(Bitmap &bitmap);
+	void FillTriangle(Bitmap &bitmap, const Vertex &v0, const Vertex &v1, const Vertex &v2, COLORREF colour);
 	void DrawString(Bitmap &bitmap, LPCTSTR text);
 
 private:
@@ -37,6 +38,9 @@ private:
 	long _frameNo = 0;
 
 	std::wstring _message;
+
+	// One depth per pixel, holding 1 / camera-space z of the nearest polygon drawn so far
+	std::vector<float> _depthBuffer;
 
 	// Lights
 	std::vector<DirectionalLight> _dLights;
