@@ -146,7 +146,9 @@ void Model::Sort(void)
 		_polygons[i].SetAvgZDepth(avgZ);
 	}
 
-	std::sort(_polygons.begin(), _polygons.end(), [](const Polygon3D& lhs, const Polygon3D& rhs) {return lhs.GetAvgZDepth() > rhs.GetAvgZDepth();});
+	// The camera looks down -z, so the furthest polygons have the most negative z.
+	// Sort ascending so they are drawn first and nearer polygons paint over them.
+	std::sort(_polygons.begin(), _polygons.end(), [](const Polygon3D& lhs, const Polygon3D& rhs) {return lhs.GetAvgZDepth() < rhs.GetAvgZDepth();});
 }
 
 void Model::CalculateLightingDirectional(std::vector<DirectionalLight> dLights)
